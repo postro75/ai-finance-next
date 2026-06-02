@@ -1,5 +1,6 @@
 import { client } from "@/sanity/lib/client";
 import { heroQuery, servicesQuery, testimonialsQuery } from "@/sanity/lib/queries";
+import { isSanityReady } from "@/sanity/env";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -28,8 +29,7 @@ type Testimonial = { _id: string; quote: string; authorName: string; authorRole:
 
 // Sprawdzenie czy Sanity jest skonfigurowany
 function isSanityConfigured(): boolean {
-  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-  return !!projectId && projectId !== "TUTAJ_WKLEJ_PROJECT_ID" && projectId !== "placeholder";
+  return isSanityReady();
 }
 
 // Fallback content (gdy Sanity nie jest jeszcze skonfigurowany)
