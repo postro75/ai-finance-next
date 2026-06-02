@@ -1,4 +1,5 @@
-// Style dla całej aplikacji Next.js
+/* Globalne style AI & Finance */
+
 :root {
   --bg-deep: #060912;
   --bg: #0a0f1c;
@@ -10,13 +11,35 @@
   --muted: #94a3b8;
   --primary: #06b6d4;
   --accent: #d4af37;
+  --success: #10b981;
+  --danger: #f43f5e;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 html, body {
   background: var(--bg-deep);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
