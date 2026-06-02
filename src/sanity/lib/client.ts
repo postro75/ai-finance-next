@@ -18,13 +18,13 @@ export function getClient(): SanityClient | null {
   return _client;
 }
 
-// Backward-compat: klient który może być null
+// Lazy client wrapper - bezpieczny do importowania nawet bez projectId
 export const client = {
-  fetch<T>(query: string, params?: Record<string, unknown>): Promise<T> {
+  async fetch<T = unknown>(query: string, params?: Record<string, unknown>): Promise<T> {
     const c = getClient();
     if (!c) {
-      throw new Error("Sanity client not configured (missing NEXT_PUBLIC_SANITY_PROJECT_ID)");
+      throw new Error("Sanity client not configured");
     }
-    return c.fetch<T>(query, params);
+    return c.fetch<T>(query, params || {});
   },
 };
