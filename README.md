@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI & Finance — Next.js + Sanity
 
-## Getting Started
+Wersja 2.0: pełny stack z CMS do edycji treści bez kodowania.
 
-First, run the development server:
+## 🌐 URLs
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Strona główna:** `/`
+- **Sanity Studio (CMS):** `/studio` ← tu edytujesz treści
+
+## 🛠️ Stack
+
+- **Next.js 16** (App Router) + React 19
+- **Sanity CMS** (Studio embedded w Next.js)
+- **TypeScript**
+- **GROQ** queries (server-side, cached)
+
+## 📁 Struktura
+
+```
+src/
+├── app/
+│   ├── layout.tsx          # Root layout (meta, fonty)
+│   ├── page.tsx            # Strona główna (fetch z Sanity)
+│   ├── globals.css         # Style globalne
+│   └── studio/
+│       └── [[...tool]]/   # Osadzone Sanity Studio
+│           └── page.tsx
+├── sanity/
+│   ├── env.ts              # Env vars (projectId, dataset)
+│   ├── schemas/            # Definicje typów treści
+│   │   ├── index.ts
+│   │   ├── siteSettings.ts
+│   │   ├── hero.ts
+│   │   ├── service.ts
+│   │   └── testimonial.ts
+│   └── lib/
+│       ├── client.ts       # Sanity client
+│       ├── image.ts        # Image URL builder
+│       └── queries.ts      # GROQ queries
+sanity.config.ts            # Konfiguracja Studio (root)
+.env.local                  # ENV (projectId, dataset)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Setup (5 kroków)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Załóż konto Sanity
+- https://www.sanity.io/ → Sign up
+- Create new project → "ai-finance"
+- Wybierz dataset: `production`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. Pobierz Project ID
+- Dashboard → Project settings → Project ID
+- Wstaw do `.env.local`:
+  ```
+  NEXT_PUBLIC_SANITY_PROJECT_ID="abc123xy"
+  NEXT_PUBLIC_SANITY_DATASET="production"
+  ```
 
-## Learn More
+### 3. Dodaj CORS origin (ważne!)
+- https://www.sanity.io/manage → API → CORS Origins → Add:
+  - `http://localhost:3000` (development)
+  - `https://twoja-domena.vercel.app` (production)
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Uruchom lokalnie
+```bash
+npm run dev
+# Otwórz http://localhost:3000
+# Studio: http://localhost:3000/studio
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 5. Deploy na Vercel
+```bash
+# Dodaj do Vercel project settings → Environment Variables:
+#   NEXT_PUBLIC_SANITY_PROJECT_ID
+#   NEXT_PUBLIC_SANITY_DATASET
+git push origin master
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📝 Edycja treści
 
-## Deploy on Vercel
+1. Otwórz `/studio` na żywej stronie (lub lokalnie)
+2. Zaloguj się kontem Sanity
+3. Edytuj:
+   - **Ustawienia strony** (tytuł, opis, email, telefon, OG image)
+   - **Hero** (nagłówek, podtytuł, CTA, zdjęcie, karty)
+   - **Usługi** (lista usług, ikony, kolejność)
+   - **Opinie** (cytaty, autorzy)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Zmiany w Sanity = natychmiast widoczne na stronie (cache CDN 60s).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔄 Porównanie z wersją 1 (statyczny HTML)
+
+| Cecha | Wersja 1 (HTML) | Wersja 2 (Next.js + Sanity) |
+|---|---|---|
+| Edycja treści | Edycja kodu + git push | Panel Sanity Studio |
+| Czy działa bez back-endu? | ✅ | ❌ (wymaga Sanity) |
+| Szybkość ładowania | ⚡⚡ | ⚡⚡⚡ (Server Components + cache) |
+| SEO | Podstawowe | Zaawansowane (per-page meta) |
+| Wielojęzyczność | ❌ | ✅ (Sanity ma natywne i18n) |
+| Koszt utrzymania | 0 PLN | 0 PLN (free tier Sanity) |
+| Setup time | 1 dzień | 2-5 dni |
+
+## 🛡️ Bezpieczeństwo
+
+- `.env.local` NIE commituj
+- CORS origins: tylko Twoje domeny
+- Sanity token: w dashboard Sanity, nie w kodzie
+
+## 🛣️ Roadmap (opcjonalne)
+
+- [ ] Pełna migracja komponentów z HTML (dashboard, timeline, services)
+- [ ] Wielojęzyczność PL/EN
+- [ ] Blog z Sanity (marketyng content)
+- [ ] Formularz kontaktowy (Formspree + Sanity leads)
+- [ ] Custom domain + SSL
+- [ ] Analytics (Plausible / GA4)
